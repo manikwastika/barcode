@@ -1,5 +1,6 @@
 // lib/views/product_info_view.dart
 
+import 'package:barcodeapp/controllers/scanner_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/product_controller.dart';
@@ -63,7 +64,7 @@ class ProductInfoView extends GetView<ProductController> {
                               decoration: BoxDecoration(
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(15),
-                                boxShadow: [
+                                boxShadow: const [
                                   BoxShadow(
                                     color: Color.fromRGBO(0, 0, 0, 0.08),
                                     offset: Offset(0, 4),
@@ -90,7 +91,7 @@ class ProductInfoView extends GetView<ProductController> {
                               fontFamily: 'RedHatText',
                             ),
                           ),
-                          SizedBox(height: 10),
+                          const SizedBox(height: 10),
                           Text(
                             product.price,
                             style: const TextStyle(
@@ -122,25 +123,31 @@ class ProductInfoView extends GetView<ProductController> {
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(
-                  onPressed: () => Get.offAllNamed('/scanner'),
+                  onPressed: () {
+                    // Hapus instance lama dari ScannerController
+                    Get.delete<ScannerController>();
+                    // Membuat instance baru menggunakan lazyPut
+                    Get.lazyPut(() => ScannerController());
+                    // Navigasi ke halaman scanner
+                    Get.offAllNamed('/scanner');
+                  },
                   style: ElevatedButton.styleFrom(
                     foregroundColor: Colors.black,
-                    backgroundColor: const Color.fromARGB(255, 226, 226, 226),
                     padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 24.0),
                     textStyle: const TextStyle(fontSize: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15),
                     ),
                   ),
-                  child: const Row(
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
+                    children: const [
                       Icon(Icons.qr_code, color: Colors.black),
                       SizedBox(width: 10),
                       Text('Scan Barcode Lagi'),
                     ],
                   ),
-                ),
+                )
               ],
             ),
           ),

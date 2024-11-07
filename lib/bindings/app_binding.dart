@@ -8,6 +8,6 @@ class AppBinding extends Bindings {
   @override
   void dependencies() {
     Get.put(ProductController());
-    Get.put(ScannerController());
+    Get.lazyPut<ScannerController>(() => ScannerController());
   }
 }

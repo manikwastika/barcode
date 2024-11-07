@@ -23,6 +23,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Get.put(ScannerController());
     return GetMaterialApp(
       title: 'Flutter Demo',
       initialRoute: AppPages.initial,

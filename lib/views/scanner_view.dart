@@ -9,9 +9,9 @@ class ScannerView extends GetView<ScannerController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Scan Barcode'),
+        title: const Text('Scan Barcode'),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () => Get.back(),
         ),
       ),

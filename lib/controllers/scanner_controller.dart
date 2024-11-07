@@ -1,5 +1,3 @@
-// lib/controllers/scanner_controller.dart
-
 import 'package:get/get.dart';
 import 'package:camera/camera.dart';
 import 'package:google_ml_kit/google_ml_kit.dart';
@@ -21,6 +19,8 @@ class ScannerController extends GetxController with GetSingleTickerProviderState
   late AnimationController animationController;
   late Animation<double> animation;
 
+  get lastScannedCode => null;
+
   @override
   void onInit() {
     super.onInit();
@@ -39,23 +39,30 @@ class ScannerController extends GetxController with GetSingleTickerProviderState
 
   Future<void> initializeCamera() async {
     try {
-      cameras.value = await availableCameras();
-      if (cameras.isNotEmpty) {
-        cameraController = CameraController(
-          cameras[0],
-          ResolutionPreset.medium,
-        );
-        await cameraController.initialize();
-        isInitialized.value = true;
+      if (!isInitialized.value) {
+        cameras.value = await availableCameras();
+        if (cameras.isNotEmpty) {
+          cameraController = CameraController(
+            cameras[0],
+            ResolutionPreset.medium,
+          );
+          await cameraController.initialize();
+          isInitialized.value = true;
+          startScanning();
+        }
+      } else {
         startScanning();
       }
     } catch (e) {
       print('Error initializing camera: $e');
+      // Coba initialize ulang jika gagal
+      isInitialized.value = false;
+      Future.delayed(Duration(milliseconds: 500), initializeCamera);
     }
   }
 
   void startScanning() {
-    if (isInitialized.value) {
+    if (isInitialized.value && !isScanning.value) {
       isScanning.value = true;
       scanBarcodes();
     }
@@ -74,23 +81,32 @@ class ScannerController extends GetxController with GetSingleTickerProviderState
         String barcode = barcodes[0].displayValue ?? '';
         if (productController.isValidBarcode(barcode)) {
           productController.findProductByBarcode(barcode);
-          Get.toNamed('/product-info');
+          await Get.toNamed('/product-info');
+          // Reset scanning state setelah kembali
+          isScanning.value = false;
+          startScanning();
         } else {
           Get.snackbar(
             'Error',
             'Barcode tidak ditemukan',
             snackPosition: SnackPosition.BOTTOM,
           );
-          Future.delayed(Duration(milliseconds: 500), scanBarcodes);
+          if (isScanning.value) {
+            Future.delayed(Duration(milliseconds: 500), scanBarcodes);
+          }
         }
       } else {
-        Future.delayed(Duration(milliseconds: 500), scanBarcodes);
+        if (isScanning.value) {
+          Future.delayed(Duration(milliseconds: 500), scanBarcodes);
+        }
       }
 
       await barcodeScanner.close();
     } catch (e) {
       print('Error scanning barcode: $e');
-      Future.delayed(Duration(milliseconds: 500), scanBarcodes);
+      if (isScanning.value) {
+        Future.delayed(Duration(milliseconds: 500), scanBarcodes);
+      }
     }
   }
 
@@ -131,16 +147,22 @@ class ScannerController extends GetxController with GetSingleTickerProviderState
         String barcode = barcodes[0].displayValue ?? '';
         if (productController.isValidBarcode(barcode)) {
           productController.findProductByBarcode(barcode);
-          Get.toNamed('/product-info');
+          await Get.toNamed('/product-info');
+          // Reset dan mulai scanning setelah kembali
+          isScanning.value = false;
+          startScanning();
         } else {
           showErrorDialog();
+          startScanning();
         }
       } else {
         showErrorDialog();
+        startScanning();
       }
     } catch (e) {
       print('Error scanning barcode: $e');
       showErrorDialog();
+      startScanning();
     } finally {
       barcodeScanner.close();
     }
@@ -191,7 +213,10 @@ class ScannerController extends GetxController with GetSingleTickerProviderState
                   borderRadius: BorderRadius.circular(30),
                 ),
               ),
-              onPressed: () => Get.back(),
+              onPressed: () {
+                Get.back();
+                startScanning();
+              },
             ),
           ),
         ],
@@ -199,10 +224,18 @@ class ScannerController extends GetxController with GetSingleTickerProviderState
     );
   }
 
+  void resetAndStartScanning() {
+    isScanning.value = false;
+    startScanning();
+  }
+
   @override
   void onClose() {
     isScanning.value = false;
-    cameraController.dispose();
+    if (isInitialized.value) {
+      cameraController.dispose();
+      isInitialized.value = false;
+    }
     animationController.dispose();
     super.onClose();
   }
