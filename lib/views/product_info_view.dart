@@ -5,8 +5,11 @@ import 'package:get/get.dart';
 import '../controllers/product_controller.dart';
 
 class ProductInfoView extends GetView<ProductController> {
+  const ProductInfoView({super.key});
+
   @override
   Widget build(BuildContext context) {
+    // ignore: deprecated_member_use
     return WillPopScope(
       onWillPop: () async {
         Get.offAllNamed('/');
@@ -20,14 +23,14 @@ class ProductInfoView extends GetView<ProductController> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: 50),
+                const SizedBox(height: 50),
                 Expanded(
                   child: SingleChildScrollView(
                     child: Obx(() {
                       final product = controller.currentProduct.value;
                       
                       if (product == null) {
-                        return Center(
+                        return const Center(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -78,10 +81,10 @@ class ProductInfoView extends GetView<ProductController> {
                               ),
                             ),
                           ),
-                          SizedBox(height: 20),
+                          const SizedBox(height: 20),
                           Text(
                             product.name,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 22,
                               fontWeight: FontWeight.bold,
                               fontFamily: 'RedHatText',
@@ -90,12 +93,12 @@ class ProductInfoView extends GetView<ProductController> {
                           SizedBox(height: 10),
                           Text(
                             product.price,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 18,
                               color: Colors.black,
                             ),
                           ),
-                          SizedBox(height: 20),
+                          const SizedBox(height: 20),
                           Text(
                             'Description',
                             style: TextStyle(
@@ -104,10 +107,10 @@ class ProductInfoView extends GetView<ProductController> {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          SizedBox(height: 10),
+                          const SizedBox(height: 10),
                           Text(
                             product.description,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 16,
                               color: Colors.black,
                             ),
@@ -117,19 +120,19 @@ class ProductInfoView extends GetView<ProductController> {
                     }),
                   ),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () => Get.offAllNamed('/scanner'),
                   style: ElevatedButton.styleFrom(
                     foregroundColor: Colors.black,
-                    backgroundColor: Color.fromARGB(255, 226, 226, 226),
-                    padding: EdgeInsets.symmetric(vertical: 14, horizontal: 24.0),
-                    textStyle: TextStyle(fontSize: 16),
+                    backgroundColor: const Color.fromARGB(255, 226, 226, 226),
+                    padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 24.0),
+                    textStyle: const TextStyle(fontSize: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15),
                     ),
                   ),
-                  child: Row(
+                  child: const Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(Icons.qr_code, color: Colors.black),

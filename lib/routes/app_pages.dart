@@ -27,4 +27,6 @@ class AppPages {
       page: () => ManualInputView(),
     ),
   ];
+
+  static var initial;
 }

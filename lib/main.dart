@@ -1,14 +1,18 @@
-// lib/main.dart
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:camera/camera.dart';
 import 'routes/app_pages.dart';
+import 'controllers/product_controller.dart';
+import 'controllers/scanner_controller.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final cameras = await availableCameras();
-  
+
+  // Register the controllers
+  Get.put(ProductController());
+  Get.lazyPut(() => ScannerController());
+
   runApp(MyApp(cameras));
 }
 
@@ -20,12 +24,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      title: 'Barcode Scanner',
+      title: 'Flutter Demo',
+      initialRoute: AppPages.initial,
+      getPages: AppPages.routes,
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      initialRoute: '/',
-      getPages: AppPages.routes,
     );
   }
 }
