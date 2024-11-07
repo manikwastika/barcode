@@ -1,17 +1,31 @@
+// lib/main.dart
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:camera/camera.dart';
+import 'routes/app_pages.dart';
 
-import 'app/routes/app_pages.dart';
-
-List<CameraDescription> cameras = [];
-
-Future<void> main() async {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  cameras = await availableCameras();
-  runApp(GetMaterialApp(
-    title: 'Barcode Scanner',
-    initialRoute: Routes.HOME,
-    getPages: AppPages.pages,
-  ));
+  final cameras = await availableCameras();
+  
+  runApp(MyApp(cameras));
+}
+
+class MyApp extends StatelessWidget {
+  final List<CameraDescription> cameras;
+
+  const MyApp(this.cameras);
+
+  @override
+  Widget build(BuildContext context) {
+    return GetMaterialApp(
+      title: 'Barcode Scanner',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      initialRoute: '/',
+      getPages: AppPages.routes,
+    );
+  }
 }

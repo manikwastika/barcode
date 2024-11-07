@@ -1,9 +1,9 @@
+// lib/views/home_view.dart
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../controllers/home_controller.dart';
-
-class HomeView extends GetView<HomeController> {
+class HomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,7 +45,7 @@ class HomeView extends GetView<HomeController> {
                 ),
               ),
               ElevatedButton(
-                onPressed: () => controller.startScanner(),
+                onPressed: () => Get.toNamed('/scanner'),
                 style: ElevatedButton.styleFrom(
                   foregroundColor: Colors.black,
                   backgroundColor: Color.fromARGB(255, 226, 226, 226),
